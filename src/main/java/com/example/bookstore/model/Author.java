@@ -1,16 +1,18 @@
 package com.example.bookstore.model;
 
+import java.time.LocalDate;
+
 public class Author{
     // Поля класу; class attributes
     private String firstName;
     private String lastName;
-    private String birthDate;
+    private LocalDate birthDate;
     private String country;
     private String language;
 
 
     //Конструктор; Constructor
-    public Author(String firstName, String lastName, String birthDate, String country, String language){
+    public Author(String firstName, String lastName, LocalDate birthDate, String country, String language){
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -32,10 +34,10 @@ public class Author{
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    public String getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
-    public void setBirthDate(String birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
