@@ -10,6 +10,9 @@
             <column name="id" type="int">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="firstName" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="lastName" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
