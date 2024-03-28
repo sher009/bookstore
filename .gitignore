@@ -1,2 +1,4 @@
 .idea/
 bookstore.iml
+out/
+target/
