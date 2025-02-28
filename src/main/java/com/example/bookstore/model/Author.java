@@ -3,7 +3,7 @@ package com.example.bookstore.model;
 import java.time.LocalDate;
 
 public class Author{
-    // Поля класу; class attributes
+    // lass attributes
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
@@ -11,7 +11,7 @@ public class Author{
     private String language;
 
 
-    //Конструктор; Constructor
+    //Constructor
     public Author(String firstName, String lastName, LocalDate birthDate, String country, String language){
         this.firstName = firstName;
         this.lastName = lastName;
