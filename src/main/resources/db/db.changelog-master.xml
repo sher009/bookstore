@@ -6,7 +6,8 @@
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <!-- Include individual changelogs here -->
-    <include file="dbchangelog.xml"/>
+    <include file="db/changelog/dbchangelog_1.xml"/>
+
 
 
 </databaseChangeLog>
