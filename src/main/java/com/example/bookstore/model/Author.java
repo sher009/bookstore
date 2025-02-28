@@ -3,7 +3,7 @@ package com.example.bookstore.model;
 import java.time.LocalDate;
 
 public class Author{
-    // lass attributes
+    // attributes
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
