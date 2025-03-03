@@ -1,15 +1,35 @@
 package com.example.bookstore.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "authors")
 public class Author{
     // attributes
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+
+    @Column(name = "last_name", nullable = false)
     private String lastName;
+
+    @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    @Column(name = "country")
     private String country;
+
+    @Column(name = "language")
     private String language;
 
+    //No-argument constructor(required for Hibernate)
+    public Author() {}
 
     //Constructor
     public Author(String firstName, String lastName, LocalDate birthDate, String country, String language){
