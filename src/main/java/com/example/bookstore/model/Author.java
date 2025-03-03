@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "authors")
-public class Author{
+public class Author {
     // attributes
 
     @Id
@@ -29,10 +29,11 @@ public class Author{
     private String language;
 
     //No-argument constructor(required for Hibernate)
-    public Author() {}
+    public Author() {
+    }
 
     //Constructor
-    public Author(String firstName, String lastName, LocalDate birthDate, String country, String language){
+    public Author(String firstName, String lastName, LocalDate birthDate, String country, String language) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -40,23 +41,36 @@ public class Author{
         this.language = language;
     }
 
+    // Validation method
+    private void validateBirthDate(LocalDate birthDate) {
+        LocalDate today = LocalDate.now();
+        if (!birthDate.isBefore(today)) {
+            throw new IllegalArgumentException("Birth date must be in the past (not today or in the future). Provided: " + birthDate);
+        }
+    }
+
     //getters setters
 
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
     public String getLastName() {
         return lastName;
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
     public LocalDate getBirthDate() {
         return birthDate;
     }
+
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
@@ -72,6 +86,7 @@ public class Author{
     public String getLanguage() {
         return language;
     }
+
     public void setLanguage(String language) {
         this.language = language;
     }
