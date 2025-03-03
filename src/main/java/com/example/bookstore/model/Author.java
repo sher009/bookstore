@@ -41,14 +41,6 @@ public class Author {
         this.language = language;
     }
 
-    // Validation method
-    private void validateBirthDate(LocalDate birthDate) {
-        LocalDate today = LocalDate.now();
-        if (!birthDate.isBefore(today)) {
-            throw new IllegalArgumentException("Birth date must be in the past (not today or in the future). Provided: " + birthDate);
-        }
-    }
-
     //getters setters
 
     public String getFirstName() {

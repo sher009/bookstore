@@ -2,7 +2,6 @@ package com.example.bookstore;
 
 import com.example.bookstore.model.Author;
 import com.example.bookstore.repository.AuthorRepository;
-import liquibase.pro.packaged.A;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
