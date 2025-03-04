@@ -3,7 +3,9 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.model.Author;
 import com.example.bookstore.AuthorService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +36,15 @@ public class AuthorController {
     public Author createAuthor(@RequestBody Author author) {
         return authorService.saveAuthor(author);
     }
+
+    @PostMapping
+    public ResponseEntity<?> createAuthor(@Valid @RequestBody Author author, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+        return ResponseEntity.ok(authorService.saveAuthor(author));
+    }
+
 
     @DeleteMapping("/{id")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {

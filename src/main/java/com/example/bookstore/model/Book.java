@@ -2,6 +2,10 @@ package com.example.bookstore.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PastOrPresent;
+
+import jakarta.validation.constraints.NotNull;
+
 
 import java.time.LocalDate;
 
@@ -14,10 +18,11 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @NotNull(message = "Title cannot be null")
     private String title;
 
     @Column(name = "published_date")
+    @PastOrPresent(message = "Published date cannot be in the future")
     private LocalDate publishedDate;
 
     @ManyToOne

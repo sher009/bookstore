@@ -2,8 +2,11 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.BookService;
 import com.example.bookstore.model.Book;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +36,15 @@ public class BookController {
     public Book createBook(@RequestBody Book book) {
         return bookService.saveBook(book);
     }
+
+    @PostMapping
+    public ResponseEntity<?> createBook(@Valid @RequestBody Book book, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+        return ResponseEntity.ok(bookService.saveBook(book));
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {

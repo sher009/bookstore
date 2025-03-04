@@ -1,8 +1,11 @@
 package com.example.bookstore.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "authors")
@@ -13,20 +16,21 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
+    @NotNull(message = "First name cannot be null")
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @NotNull(message = "Last name cannot be null")
     private String lastName;
 
-    @Column(name = "birth_date")
+    @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
 
-    @Column(name = "country")
-    private String country;
 
-    @Column(name = "language")
+    private String country;
     private String language;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Book> books;
 
     //No-argument constructor(required for Hibernate)
     public Author() {
