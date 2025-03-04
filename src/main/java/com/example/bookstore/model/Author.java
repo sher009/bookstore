@@ -16,17 +16,22 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "first_name", nullable = false)
     @NotNull(message = "First name cannot be null")
     private String firstName;
 
+    @Column(name = "last_name", nullable = false)
     @NotNull(message = "Last name cannot be null")
     private String lastName;
 
-    @Past(message = "Birth date must be in the past")
+    @Past(message = "Birth date must be in the past or present")
+    @Column(name = "birthDate")
     private LocalDate birthDate;
 
-
+    @Column(name = "country")
     private String country;
+
+    @Column(name = "language")
     private String language;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
