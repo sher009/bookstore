@@ -33,17 +33,14 @@ public class BookController {
     }
 
     @PostMapping
-    public Book createBook(@RequestBody Book book) {
-        return bookService.save(book);
-    }
-
-    @PostMapping
     public ResponseEntity<?> createBook(@Valid @RequestBody Book book, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-        return ResponseEntity.ok(bookService.save(book));
+        Book savedBook = bookService.save(book);
+        return ResponseEntity.ok(savedBook);
     }
+
 
 
     @DeleteMapping("/{id}")

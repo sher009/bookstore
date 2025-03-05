@@ -33,17 +33,14 @@ public class AuthorController {
     }
 
     @PostMapping
-    public Author createAuthor(@RequestBody Author author) {
-        return authorService.saveAuthor(author);
-    }
-
-    @PostMapping
     public ResponseEntity<?> createAuthor(@Valid @RequestBody Author author, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-        return ResponseEntity.ok(authorService.saveAuthor(author));
+        Author savedAuthor = authorService.saveAuthor(author);
+        return ResponseEntity.ok(savedAuthor);
     }
+
 
 
     @DeleteMapping("/{id")
