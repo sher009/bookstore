@@ -14,19 +14,19 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> getAllBooks() {
+    public List<Book> getAll() {
         return bookRepository.findAll();
     }
 
-    public Optional<Book> getBookById(Long id) {
+    public Optional<Book> getById(Long id) {
         return bookRepository.findById(id);
     }
 
-    public Book saveBook(Book book) {
+    public Book save(Book book) {
         return bookRepository.save(book);
     }
 
-    public void deleteBook(Long id) {
+    public void delete(Long id) {
         bookRepository.deleteById(id);
     }
 }

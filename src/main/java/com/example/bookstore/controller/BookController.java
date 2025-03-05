@@ -23,18 +23,18 @@ public class BookController {
 
     @GetMapping
     public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+        return bookService.getAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
-        Optional<Book> book = bookService.getBookById(id);
+        Optional<Book> book = bookService.getById(id);
         return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public Book createBook(@RequestBody Book book) {
-        return bookService.saveBook(book);
+        return bookService.save(book);
     }
 
     @PostMapping
@@ -42,13 +42,13 @@ public class BookController {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-        return ResponseEntity.ok(bookService.saveBook(book));
+        return ResponseEntity.ok(bookService.save(book));
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        bookService.deleteBook(id);
+        bookService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

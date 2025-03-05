@@ -2,7 +2,8 @@ package com.example.bookstore.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import com.example.bookstore.validation.PastOrPresent;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Author {
     @NotNull(message = "Last name cannot be null")
     private String lastName;
 
-    @Past(message = "Birth date must be in the past or present")
+    @PastOrPresent(message = "Birth date must be in the past or present") // use my own annotation
     @Column(name = "birthDate")
     private LocalDate birthDate;
 

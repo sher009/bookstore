@@ -2,7 +2,7 @@ package com.example.bookstore.model;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PastOrPresent;
+import com.example.bookstore.validation.PastOrPresent;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -22,7 +22,7 @@ public class Book {
     private String title;
 
     @Column(name = "published_date")
-    @PastOrPresent(message = "Published date cannot be in the future")
+    @PastOrPresent(message = "Published date cannot be in the future") // use my own annotation
     private LocalDate publishedDate;
 
     @ManyToOne
