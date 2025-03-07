@@ -61,8 +61,8 @@ public class BookControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].title", is("Test Book")))
                 .andExpect(jsonPath("$[0].author.firstName", is("Jon")))
                 .andExpect(jsonPath("$[0].author.lastName", is("Lin")));
-
     }
+
 
     @Test
     public void testDeleteBook() throws Exception {
