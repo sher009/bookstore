@@ -2,10 +2,12 @@ package com.example.bookstore;
 
 import com.example.bookstore.model.Book;
 import com.example.bookstore.repository.BookRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class BookService {
 
     private final BookRepository bookRepository;

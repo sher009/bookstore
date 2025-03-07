@@ -37,7 +37,7 @@ public class PastOrPresentValidatorTest {
         PastOrPresentValidator validator = new PastOrPresentValidator();
 
         //Validate the past date (should pass)
-        assertTrue(validator.isValid(pastDate, null), "Date should not be in the past");
+        assertTrue(validator.isValid(pastDate, null), "Date should be in the past");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class PastOrPresentValidatorTest {
         PastOrPresentValidator validator = new PastOrPresentValidator();
 
         //Validate the present date (should pass)
-        assertTrue(validator.isValid(presentDate, null), "Date should  be in the present");
+        assertTrue(validator.isValid(presentDate, null), "Date should not be in the present");
     }
 
     @Test
