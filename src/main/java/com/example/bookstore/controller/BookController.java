@@ -2,6 +2,7 @@ package com.example.bookstore.controller;
 
 import com.example.bookstore.BookService;
 import com.example.bookstore.model.Book;
+import com.example.bookstore.repository.BookRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,25 +17,29 @@ import java.util.Optional;
 public class BookController {
 
     private final BookService bookService;
+    private final BookRepository bookRepository;
 
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, BookRepository bookRepository) {
         this.bookService = bookService;
+        this.bookRepository = bookRepository;
     }
 
-    // get all books
+
     @GetMapping
     public List<Book> getAllBooks() {
         return bookService.getAll();
     }
 
-    // get book by ID
+
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
-        Optional<Book> book = bookService.getById(id);
-        return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Book> getBook(@PathVariable Long id) {
+        Optional<Book> book = bookRepository.findById(id);
+        return book.map(ResponseEntity::ok)  // If the book is found, we return it.
+                .orElseGet(() -> ResponseEntity.notFound().build());  // If not found, return 404
     }
 
-    // create new book
+
+
     @PostMapping
     public ResponseEntity<?> createBook(@Valid @RequestBody Book book, BindingResult result) {
         if (result.hasErrors()) {
@@ -45,11 +50,15 @@ public class BookController {
     }
 
 
-    // delete book by ID
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        bookService.delete(id);
-        return ResponseEntity.noContent().build();
+        if (!bookRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();  // Returns 404 if book not found
+        }
+        bookRepository.deleteById(id);
+        return ResponseEntity.noContent().build();  // Returns 204 if the book was successfully deleted
     }
+
 
 }
