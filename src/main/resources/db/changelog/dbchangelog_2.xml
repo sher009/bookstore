@@ -8,9 +8,6 @@
     <changeSet id="2" author="Cristian">
 
         <createTable tableName="book">
-            <column name="id" type="int">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
             <column name="id" type="serial">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
