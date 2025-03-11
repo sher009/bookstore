@@ -1,11 +1,15 @@
 package com.example.bookstore.controller;
 
+import com.example.bookstore.AuthorService;
+import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.repository.AuthorRepository;
 import com.example.bookstore.BookService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +21,14 @@ import java.util.Optional;
 @RequestMapping("/books")
 public class BookController {
 
+
     private final BookService bookService;
-    private final BookRepository bookRepository;
-    private final AuthorRepository authorRepository;
+    private final AuthorService authorService;
 
 
-    public BookController(BookService bookService, BookRepository bookRepository, AuthorRepository authorRepository) {
+    public BookController(BookService bookService, AuthorService authorService) {
         this.bookService = bookService;
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;  // Збереження авторів у контролері
+        this.authorService = authorService;
     }
 
     @GetMapping
@@ -35,35 +38,33 @@ public class BookController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBook(@PathVariable Long id) {
-        Optional<Book> book = bookRepository.findById(id);
-        return book.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Book> book = bookService.getById(id);
+        return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<?> createBook(@Valid @RequestBody Book book, BindingResult result) {
+    public ResponseEntity<?> createBook(@Valid @RequestBody BookRequest request, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
-        // Checking if the author is in the database
-        Author author = book.getAuthor();
-        Optional<Author> existingAuthor = authorRepository.findById(author.getId());
-        if (existingAuthor.isEmpty()) {
-            return ResponseEntity.badRequest().body("Author not found");
-        }
+        Author author = authorService.getAuthorById(request.getAuthorId())
+                .orElseThrow(() -> new EntityNotFoundException("Author with ID " + request.getAuthorId() + " not found"));
 
-        book.setAuthor(existingAuthor.get());  // We establish the found author
+        Book book = new Book(request.getTitle(), request.getPublishedDate(), author);
         Book savedBook = bookService.save(book);
-        return ResponseEntity.status(201).body(savedBook);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        if (!bookRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+        try {
+            bookService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        bookRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

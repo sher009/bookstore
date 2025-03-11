@@ -55,6 +55,7 @@ public class Author {
     public Long getId() {
         return id;
     }
+
     public String getFirstName() {
         return firstName;
     }

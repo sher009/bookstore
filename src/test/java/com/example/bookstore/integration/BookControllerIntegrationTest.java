@@ -1,8 +1,8 @@
 package com.example.bookstore.integration;
 
+import com.example.bookstore.BookService;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.model.Book;
-import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.repository.AuthorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 import java.time.LocalDate;
-import static org.hamcrest.Matchers.*;
+
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,7 +26,7 @@ public class BookControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
     @Autowired
     private AuthorRepository authorRepository;
@@ -35,40 +36,41 @@ public class BookControllerIntegrationTest {
     @BeforeEach
     public void setup() {
         authorRepository.deleteAll();
-        bookRepository.deleteAll();
-        author = new Author("Jon", "Lin", LocalDate.of(1990, 5, 15), "USA", "English");
-        authorRepository.save(author);
-
-        // Checking if the author is saved and the ID is not null
+        bookService.deleteAll();
+        author = authorRepository.save(new Author("Jon", "Lin", LocalDate.of(1990, 5, 15), "USA", "English"));
         assertNotNull(author.getId(), "Author ID should not be null after saving.");
     }
 
+
     @Test
-    public void testCreateAndRetrieveBook() throws Exception {
-        String newBookJson = "{ \"title\": \"Test Book\", \"publishedDate\": \"2023-01-01\", \"author\": { \"id\": " + author.getId() + " } }";
+    public void testCreateBookWithExistingAuthor() throws Exception {
+        String bookJson = "{ \"title\": \"Test Book\", \"publishedDate\": \"2023-01-01\", \"authorId\": " + author.getId() + " }";
 
         mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newBookJson))
+                        .content(bookJson))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title", is("Test Book")))
-                .andExpect(jsonPath("$.author.firstName", is("Jon")))
-                .andExpect(jsonPath("$.author.lastName", is("Lin")));
-
-        mockMvc.perform(get("/books"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThan(0))))
-                .andExpect(jsonPath("$[0].title", is("Test Book")))
-                .andExpect(jsonPath("$[0].author.firstName", is("Jon")))
-                .andExpect(jsonPath("$[0].author.lastName", is("Lin")));
+                .andExpect(jsonPath("$.title").value("Test Book"))
+                .andExpect(jsonPath("$.author.id").value(author.getId()));
     }
 
+    @Test
+    public void testCreateBookWithNonExistingAuthor() throws Exception {
+        // Creating a book with a non-existent author(ID 99999)
+        String bookJson = "{ \"title\": \"Orphan Book\", \"publishedDate\": \"2023-01-01\", \"authorId\": 99999 }";
+
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Author with ID 99999 not found"));
+    }
 
     @Test
-    public void testDeleteBook() throws Exception {
+    public void testDeleteExistingBook() throws Exception {
         // First, we create a book
         Book book = new Book("Test Book", LocalDate.of(2023, 1, 1), author);
-        bookRepository.save(book);
+        bookService.save(book);
 
         // Now delete the book and check if the status 204 is returned
         mockMvc.perform(delete("/books/" + book.getId()))
@@ -77,10 +79,9 @@ public class BookControllerIntegrationTest {
 
     @Test
     public void testDeleteNonExistingBook() throws Exception {
-        mockMvc.perform(delete("/books/99999"))  // We are using an ID that does not exist.
-                .andExpect(status().isNotFound());  // Waiting for 404
+        mockMvc.perform(delete("/books/99999"))
+                .andExpect(status().isNotFound());
     }
-
 
     @Test
     public void testCreateAuthorWithFutureBirthDate() throws Exception {

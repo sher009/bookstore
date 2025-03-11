@@ -1,8 +1,10 @@
 package service;
 
+import com.example.bookstore.AuthorService;
 import com.example.bookstore.BookService;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.model.Book;
+import com.example.bookstore.repository.AuthorRepository;
 import com.example.bookstore.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +22,13 @@ public class BookServiceTest {
 
     private BookRepository bookRepository;
     private BookService bookService;
+    private AuthorService authorService;
 
     @BeforeEach
     void setUp() {
         bookRepository = mock(BookRepository.class);
-        bookService = new BookService(bookRepository);
+        AuthorRepository authorRepository = mock(AuthorRepository.class);
+        bookService = new BookService(bookRepository, authorRepository);
     }
 
     @Test

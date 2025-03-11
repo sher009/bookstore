@@ -25,7 +25,7 @@ public class Book {
     @PastOrPresent(message = "Published date cannot be in the future") // use my own annotation
     private LocalDate publishedDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
