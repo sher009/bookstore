@@ -3,9 +3,6 @@ package com.example.bookstore.controller;
 import com.example.bookstore.AuthorService;
 import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Book;
-import com.example.bookstore.model.Author;
-import com.example.bookstore.repository.BookRepository;
-import com.example.bookstore.repository.AuthorRepository;
 import com.example.bookstore.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -37,7 +34,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(@PathVariable Long id) {
+    public ResponseEntity<Book> getBookByID(@PathVariable Long id) {
         Optional<Book> book = bookService.getById(id);
         return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -48,13 +45,7 @@ public class BookController {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
-        Author author = authorService.getAuthorById(request.getAuthorId())
-                .orElseThrow(() -> new EntityNotFoundException("Author with ID " + request.getAuthorId() + " not found"));
-
-        Book book = new Book(request.getTitle(), request.getPublishedDate(), author);
-        Book savedBook = bookService.save(book);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.save(request));
     }
 
 

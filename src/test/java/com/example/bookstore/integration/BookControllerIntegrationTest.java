@@ -1,6 +1,8 @@
 package com.example.bookstore.integration;
 
+import com.example.bookstore.AuthorService;
 import com.example.bookstore.BookService;
+import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.repository.AuthorRepository;
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,10 +35,12 @@ public class BookControllerIntegrationTest {
     private AuthorRepository authorRepository;
 
     private Author author;
+    @Autowired
+    private AuthorService authorService;
 
     @BeforeEach
     public void setup() {
-        authorRepository.deleteAll();
+        authorService.deleteAll();
         bookService.deleteAll();
         author = authorRepository.save(new Author("Jon", "Lin", LocalDate.of(1990, 5, 15), "USA", "English"));
         assertNotNull(author.getId(), "Author ID should not be null after saving.");
@@ -54,6 +59,29 @@ public class BookControllerIntegrationTest {
                 .andExpect(jsonPath("$.author.id").value(author.getId()));
     }
 
+
+
+    @Test
+    public void testCreateBookWithNegativeAuthorId() throws Exception {
+        String bookJson = "{ \"title\": \"Orphan Book\", \"publishedDate\": \"2023-01-01\", \"authorId\": -1 }";
+
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("Author ID must be positive")));
+    }
+    @Test
+    public void testCreateBookWithoutAuthor() throws Exception {
+        String bookJson = "{ \"title\": \"Test Book\", \"publishedDate\": \"2023-01-01\", \"authorId\":  " + null + "  }";
+
+        mockMvc.perform(post("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("Author ID cannot be null")));
+    }
+
     @Test
     public void testCreateBookWithNonExistingAuthor() throws Exception {
         // Creating a book with a non-existent author(ID 99999)
@@ -70,7 +98,9 @@ public class BookControllerIntegrationTest {
     public void testDeleteExistingBook() throws Exception {
         // First, we create a book
         Book book = new Book("Test Book", LocalDate.of(2023, 1, 1), author);
-        bookService.save(book);
+        BookRequest bookRequest = new BookRequest(book.getTitle(), book.getPublishedDate(), author.getId());
+        bookService.save(bookRequest);
+
 
         // Now delete the book and check if the status 204 is returned
         mockMvc.perform(delete("/books/" + book.getId()))

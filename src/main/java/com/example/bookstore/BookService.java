@@ -1,5 +1,6 @@
 package com.example.bookstore;
 
+import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.repository.AuthorRepository;
@@ -23,23 +24,28 @@ public class BookService {
         this.authorRepository = authorRepository;
     }
 
-    @Transactional
-    public Book save(Book book) {
-        // Checking if the author is in the database
-        if (book.getAuthor() != null && book.getAuthor().getId() != null) {
-            Author author = authorRepository.findById(book.getAuthor().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Author with ID " + book.getAuthor().getId() + " not found"));
 
-            book.setAuthor(author); // We tie the author to the book
+    @Transactional
+    public Book save(BookRequest request) {
+        // Checking if the author is in the database
+        Long authorId = request.getAuthorId();
+        if (authorId != null) {
+            Author author = authorRepository.findById(authorId)
+                    .orElseThrow(() -> new EntityNotFoundException("Author with ID " + authorId + " not found"));
+
+            Book book = new Book(request.getTitle(), request.getPublishedDate(), author);
+
+            return bookRepository.save(book);
+
         }
 
-        // Saving a book to a database
-        return bookRepository.save(book);
+        throw new EntityNotFoundException("Author cannot be null");
     }
 
     public List<Book> getAll() {
         return bookRepository.findAll();
     }
+
 
     public Optional<Book> getById(Long id) {
         return bookRepository.findById(id);
