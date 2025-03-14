@@ -97,13 +97,12 @@ public class BookControllerIntegrationTest {
     @Test
     public void testDeleteExistingBook() throws Exception {
         // First, we create a book
-        Book book = new Book("Test Book", LocalDate.of(2023, 1, 1), author);
-        BookRequest bookRequest = new BookRequest(book.getTitle(), book.getPublishedDate(), author.getId());
-        bookService.save(bookRequest);
+        BookRequest bookRequest = new BookRequest("Test Book", LocalDate.of(2023, 1, 1), author.getId());
+        Book getbook = bookService.save(bookRequest);
 
 
         // Now delete the book and check if the status 204 is returned
-        mockMvc.perform(delete("/books/" + book.getId()))
+        mockMvc.perform(delete("/books/" + getbook.getId()))
                 .andExpect(status().isNoContent());  // Expect 204 if the book is successfully deleted
     }
 

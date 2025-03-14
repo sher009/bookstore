@@ -1,9 +1,7 @@
 package com.example.bookstore.dto;
 
 
-import com.example.bookstore.model.Author;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Negative;
 import jakarta.validation.constraints.NotNull;
 import com.example.bookstore.validation.PastOrPresent;
 
@@ -54,9 +52,5 @@ public class BookRequest {
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
-    }
-
-    public void setAuthor(Author author) {
-
     }
 }
