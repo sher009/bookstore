@@ -1,8 +1,11 @@
 package service;
 
+import com.example.bookstore.AuthorService;
 import com.example.bookstore.BookService;
+import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.model.Book;
+import com.example.bookstore.repository.AuthorRepository;
 import com.example.bookstore.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,39 +21,38 @@ import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
 
-    private BookRepository bookRepository;
     private BookService bookService;
 
     @BeforeEach
     void setUp() {
-        bookRepository = mock(BookRepository.class);
-        bookService = new BookService(bookRepository);
+        bookService = mock(BookService.class);
     }
 
     @Test
     void testSave() {
         Author author = new Author("Jon", "Lin", LocalDate.of(1990, 5, 10), "USA", "English");
         Book book = new Book("The Great Adventure", LocalDate.of(2020, 5, 10), author);
-        when(bookRepository.save(any(Book.class))).thenReturn(book);
+        BookRequest request = new BookRequest("The Great Adventure", LocalDate.of(2020, 5, 10), author.getId());
+        when(bookService.save(any(BookRequest.class))).thenReturn(book);
 
-        Book saveBook = bookService.save(book);
+        Book saveBook = bookService.save(request);
 
         assertNotNull(saveBook);
         assertEquals("The Great Adventure", saveBook.getTitle());
-        verify(bookRepository, times(1)).save(book);
+        verify(bookService, times(1)).save(request);
     }
 
     @Test
     void testGetById() {
         Author author = new Author("Jon", "Lin", LocalDate.of(1990, 5, 10), "USA", "English");
         Book book = new Book("The Great Adventure", LocalDate.of(2020, 5, 10), author);
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(bookService.getById(1L)).thenReturn(Optional.of(book));
 
         Optional<Book> foundBook = bookService.getById(1L);
 
         assertTrue(foundBook.isPresent());
         assertEquals("The Great Adventure", foundBook.get().getTitle());
-        verify(bookRepository, times(1)).findById(1L);
+        verify(bookService, times(1)).getById(1L);
     }
 
     @Test
@@ -62,7 +64,7 @@ public class BookServiceTest {
         bookService.delete(bookId);
 
         // Assert: verify that deleteById was called with the correct ID
-        verify(bookRepository, times(1)).deleteById(bookId);
+        verify(bookService, times(1)).delete(bookId);
     }
 
     @Test
@@ -75,7 +77,7 @@ public class BookServiceTest {
 
         List<Book> books = Arrays.asList(book1, book2);
 
-        when(bookRepository.findAll()).thenReturn(books);
+        when(bookService.getAll()).thenReturn(books);
 
         List<Book> foundBooks = bookService.getAll();
 
@@ -83,7 +85,7 @@ public class BookServiceTest {
         assertEquals(2, foundBooks.size());
         assertEquals("The Great Adventure", foundBooks.get(0).getTitle());
         assertEquals("Another Journey", foundBooks.get(1).getTitle());
-        verify(bookRepository, times(1)).findAll();
+        verify(bookService, times(1)).getAll();
     }
 
 

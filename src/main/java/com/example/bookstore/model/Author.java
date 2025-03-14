@@ -52,6 +52,9 @@ public class Author {
     }
 
     //getters setters
+    public Long getId() {
+        return id;
+    }
 
     public String getFirstName() {
         return firstName;

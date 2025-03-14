@@ -1,6 +1,5 @@
 package com.example.bookstore.controller;
 
-
 import com.example.bookstore.model.Author;
 import com.example.bookstore.AuthorService;
 import jakarta.validation.Valid;
@@ -38,12 +37,11 @@ public class AuthorController {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
         Author savedAuthor = authorService.saveAuthor(author);
-        return ResponseEntity.ok(savedAuthor);
+        return ResponseEntity.status(201).body(savedAuthor);
     }
 
 
-
-    @DeleteMapping("/{id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
         authorService.deleteAuthor(id);
         return ResponseEntity.noContent().build();
