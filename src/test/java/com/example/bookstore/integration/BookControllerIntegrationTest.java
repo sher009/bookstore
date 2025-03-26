@@ -1,11 +1,13 @@
 package com.example.bookstore.integration;
 
-import com.example.bookstore.AuthorService;
-import com.example.bookstore.BookService;
+import com.example.bookstore.model.Category;
+import com.example.bookstore.service.AuthorService;
+import com.example.bookstore.service.BookService;
 import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.repository.AuthorRepository;
+import com.example.bookstore.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -37,6 +42,8 @@ public class BookControllerIntegrationTest {
     private Author author;
     @Autowired
     private AuthorService authorService;
+    @Autowired
+    private CategoryService categoryService;
 
     @BeforeEach
     public void setup() {
@@ -44,6 +51,7 @@ public class BookControllerIntegrationTest {
         bookService.deleteAll();
         author = authorRepository.save(new Author("Jon", "Lin", LocalDate.of(1990, 5, 15), "USA", "English"));
         assertNotNull(author.getId(), "Author ID should not be null after saving.");
+         categoryService.createCategory(new Category("A", Set.of(new Book("Harry Potter", LocalDate.of(1990, 5, 15), author))));
     }
 
 
@@ -54,6 +62,7 @@ public class BookControllerIntegrationTest {
         mockMvc.perform(post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookJson))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("Test Book"))
                 .andExpect(jsonPath("$.author.id").value(author.getId()));
@@ -127,4 +136,6 @@ public class BookControllerIntegrationTest {
         mockMvc.perform(get("/books/99999")) // An ID that does not exist
                 .andExpect(status().isNotFound());
     }
+
+
 }

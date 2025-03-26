@@ -1,15 +1,19 @@
 package com.example.bookstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import com.example.bookstore.validation.PastOrPresent;
+import lombok.Getter;
+import lombok.Setter;
 
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "authors")
+@Getter
+@Setter
 public class Author {
     // attributes
 
@@ -26,7 +30,7 @@ public class Author {
     private String lastName;
 
     @PastOrPresent(message = "Birth date must be in the past or present") // use my own annotation
-    @Column(name = "birthDate")
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Column(name = "country")
@@ -35,6 +39,7 @@ public class Author {
     @Column(name = "language")
     private String language;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books;
 
@@ -48,51 +53,6 @@ public class Author {
         this.lastName = lastName;
         this.birthDate = birthDate;
         this.country = country;
-        this.language = language;
-    }
-
-    //getters setters
-    public Long getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
         this.language = language;
     }
 

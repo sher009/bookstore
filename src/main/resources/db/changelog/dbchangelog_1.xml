@@ -7,16 +7,16 @@
 
     <changeSet id="1" author="Cristian">
         <createTable tableName="author">
-            <column name="id" type="int">
+            <column name="id" type="BIGSERIAL" >
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="firstName" type="varchar(255)">
+            <column name="first_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="lastName" type="varchar(255)">
+            <column name="last_name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="birthDate" type="date">
+            <column name="birth_date" type="date">
                 <constraints nullable="false"/>
             </column>
             <column name="country" type="varchar(255)">

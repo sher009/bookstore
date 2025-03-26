@@ -1,12 +1,9 @@
 package service;
 
-import com.example.bookstore.AuthorService;
-import com.example.bookstore.BookService;
+import com.example.bookstore.service.BookService;
 import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.model.Book;
-import com.example.bookstore.repository.AuthorRepository;
-import com.example.bookstore.repository.BookRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -8,15 +8,15 @@
     <changeSet id="2" author="Cristian">
 
         <createTable tableName="book">
-            <column name="id" type="serial">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
             <column name="title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="publishedDate" type="date"/>
-            <column name="author_id" type="int">
+            <column name="published_date" type="date"/>
+            <column name="author_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>

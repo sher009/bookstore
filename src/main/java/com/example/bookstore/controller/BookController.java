@@ -1,9 +1,9 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.AuthorService;
+import com.example.bookstore.service.AuthorService;
 import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Book;
-import com.example.bookstore.BookService;
+import com.example.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
