@@ -1,6 +1,6 @@
 package service;
 
-import com.example.bookstore.AuthorService;
+import com.example.bookstore.service.AuthorService;
 import com.example.bookstore.model.Author;
 import com.example.bookstore.repository.AuthorRepository;
 

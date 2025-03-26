@@ -8,5 +8,7 @@
     <!-- Connect the change files -->
     <include file="db/changelog/dbchangelog_1.xml"/>
     <include file="db/changelog/dbchangelog_2.xml"/>
+    <include file="db/changelog/dbchangelog_3.xml"/>
+    <include file="db/changelog/dbchangelog_4.xml"/>
 
 </databaseChangeLog>
